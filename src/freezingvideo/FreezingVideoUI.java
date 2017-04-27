@@ -6,10 +6,10 @@
 
 package freezingvideo;
 
-import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 import javax.swing.ImageIcon;
 import java.io.File;
+import freezeOption.manageFreezeOption;
 
 /**
  * @authors G. Allegretta, F. Scarangella
@@ -17,15 +17,17 @@ import java.io.File;
 
 public class FreezingVideoUI extends JFrame {
 
-    String firstAreaText = "Welcome to the freeze tab option! \nPlease select a video to freeze and a destination folder \n";
-    String firstVideoText = "Choose a video to be freezed";
-    String firstFolderText = "Choose a destination folder";
-    String startText = "You can now click the start button! \n";
+    private File pathVideo;
+    private File pathFolder;
+    
+    private final String firstAreaText = "Welcome to the freeze tab option! \nPlease select a video to freeze and a destination folder \n";
+    private final String firstVideoText = "Choose a video to be freezed";
+    private final String firstFolderText = "Choose a destination folder";
+    private final String startText = "You can now click the start button! \n";
     
     // Creates new form FreezingVideoUI
     public FreezingVideoUI() {     
         initComponents();
-        
         FreezeProgressArea.setText(firstAreaText);
     }
 
@@ -99,6 +101,11 @@ public class FreezingVideoUI extends JFrame {
         FreezeBtn.setMaximumSize(new java.awt.Dimension(61, 23));
         FreezeBtn.setMinimumSize(new java.awt.Dimension(61, 23));
         FreezeBtn.setPreferredSize(new java.awt.Dimension(61, 23));
+        FreezeBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                FreezeBtnMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout FreezePanelLayout = new javax.swing.GroupLayout(FreezePanel);
         FreezePanel.setLayout(FreezePanelLayout);
@@ -179,15 +186,14 @@ public class FreezingVideoUI extends JFrame {
     private void ChVideoBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ChVideoBtnMouseClicked
         // open a JFileChooser window in opening mode to get the video file
         VideoFileChooser chooseVideo = new VideoFileChooser();
-        File pathVideo = chooseVideo.getPathV();
-        String nameVideo = pathVideo.getName();
+        pathVideo = chooseVideo.getPathV();
         
-        if (nameVideo.equals("null")) {
+        if (pathVideo.getName().equals("null")) {
             // do nothing
         } else {
             // show path file to the JTextField associated
             ChVideoTxt.setText(pathVideo.toString());
-            FreezeProgressArea.append("Selected video: " + nameVideo + "\n");
+            FreezeProgressArea.append("Selected video: " + pathVideo.getName() + "\n");
             // check if both video and destination folder are selected and enable the 'start' button
             if (FreezeChDestTxt.getText().equals(firstFolderText)) {
                 // do nothing
@@ -201,15 +207,14 @@ public class FreezingVideoUI extends JFrame {
     private void FreezeChDestBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_FreezeChDestBtnMouseClicked
         // open a JFileChooser window in opening move to get the destination folder
         FolderPathChooser chooseFolder = new FolderPathChooser();
-        File pathFolder = chooseFolder.getPathF();
-        String nameFolder = pathFolder.getName();
+        pathFolder = chooseFolder.getPathF();
         
-        if (nameFolder.equals("null")) {
+        if (pathFolder.getName().equals("null")) {
             // do nothing
         } else {
             // show folder path to the JTextField associated
             FreezeChDestTxt.setText(pathFolder.toString());
-            FreezeProgressArea.append("Selected folder: " + nameFolder + "\n");
+            FreezeProgressArea.append("Selected folder: " + pathFolder.getName() + "\n");
             // check if both video and destination folder are selected and enable the 'start' button
             if (ChVideoTxt.getText().equals(firstVideoText)) {
                 // do nothing
@@ -228,6 +233,11 @@ public class FreezingVideoUI extends JFrame {
         FreezeChDestTxt.setText(firstFolderText);
         FreezeBtn.setEnabled(false);
     }//GEN-LAST:event_ResetBtnMouseClicked
+
+    private void FreezeBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_FreezeBtnMouseClicked
+        manageFreezeOption manageFreezing = new manageFreezeOption(pathVideo,pathFolder);
+        FreezeProgressArea.append(manageFreezing.generateKeyFrames() + "\n");
+    }//GEN-LAST:event_FreezeBtnMouseClicked
     
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */

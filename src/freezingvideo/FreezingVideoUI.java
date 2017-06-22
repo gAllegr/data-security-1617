@@ -10,6 +10,9 @@ import javax.swing.JFrame;
 import javax.swing.ImageIcon;
 import java.io.File;
 import freezeOption.manageFreezeOption;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @authors G. Allegretta, F. Scarangella
@@ -39,7 +42,6 @@ public class FreezingVideoUI extends JFrame {
         FreezePanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         FreezeProgressArea = new javax.swing.JTextArea();
-        FreezeProgressBar = new javax.swing.JProgressBar();
         ChVideoBtn = new javax.swing.JButton();
         ChVideoTxt = new javax.swing.JTextField();
         FreezeChDestBtn = new javax.swing.JButton();
@@ -114,7 +116,6 @@ public class FreezingVideoUI extends JFrame {
             .addGroup(FreezePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(FreezePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(FreezeProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, FreezePanelLayout.createSequentialGroup()
                         .addGroup(FreezePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -146,10 +147,8 @@ public class FreezingVideoUI extends JFrame {
                 .addGroup(FreezePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(FreezeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
                     .addComponent(ResetBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(FreezeProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -236,7 +235,12 @@ public class FreezingVideoUI extends JFrame {
 
     private void FreezeBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_FreezeBtnMouseClicked
         manageFreezeOption manageFreezing = new manageFreezeOption(pathVideo,pathFolder);
-        FreezeProgressArea.append(manageFreezing.generateKeyFrames() + "\n");
+        try {
+            FreezeProgressArea.append(manageFreezing.generateKeyFrames() + "\n");
+            FreezeProgressArea.append(manageFreezing.segmentVideo() + "\n");
+        } catch (IOException ex) {
+            Logger.getLogger(FreezingVideoUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_FreezeBtnMouseClicked
     
     public static void main(String args[]) {
@@ -279,7 +283,6 @@ public class FreezingVideoUI extends JFrame {
     private javax.swing.JTextField FreezeChDestTxt;
     private javax.swing.JPanel FreezePanel;
     private javax.swing.JTextArea FreezeProgressArea;
-    private javax.swing.JProgressBar FreezeProgressBar;
     private javax.swing.JButton ResetBtn;
     private javax.swing.JPanel UnfreezePanel;
     private javax.swing.JScrollPane jScrollPane1;

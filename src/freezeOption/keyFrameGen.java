@@ -43,7 +43,7 @@ public class keyFrameGen {
     // sort keyFrames array in a crescent order and remove duplicate
     private void removeDuplicates() {
         Arrays.sort(keyFrames);
-        
+               
         // populate the HashSet
         Set<Integer> set = new LinkedHashSet<>();
         for(int i=0; i<keyFramesNumber; i++) {
@@ -59,6 +59,20 @@ public class keyFrameGen {
         } 
         // copy the array without duplicates into keyFrames array
         keyFrames = Arrays.copyOf(intValues, intValues.length);
+        
+        // sum of array values must be lesser than video time length
+        int sum=0, pos=0;
+        for(int i=0; i<keyFrames.length; i++) {
+            sum += keyFrames[i];
+            if(sum < max){
+                sum += keyFrames[i];  
+                pos++;
+            }
+            else {
+                break;
+            }
+        }
+        keyFrames = Arrays.copyOfRange(keyFrames, 0, pos);
     }
     
     // create a string with the generated key frames

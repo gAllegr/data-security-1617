@@ -5,10 +5,10 @@
 
 package freezeOption;
 
-import java.io.File;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import javax.swing.JTextArea;
+import java.io.*;
+import java.security.Principal;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @authors G. Allegretta, F. Scarangella
@@ -46,7 +46,7 @@ public class manageFreezeOption {
     }
     
     // create key frames and save them on a file
-    public String generateKeyFrames() {
+    public String generateKeyFrames() throws IOException {
         keyFrameGen gen = new keyFrameGen(durationVideo);
         keyFrames = gen.getKeyFrames();
         createFrameFile();
@@ -54,7 +54,26 @@ public class manageFreezeOption {
     }
     
     // TO DO -> create a file in the output folder and save the keyframes
-    private void createFrameFile() {
+    private void createFrameFile() throws IOException {
+        String FrameFilePath = outputFolder.getAbsolutePath() + "\\frames.txt";
         
+        FileWriter writer;
+        writer = new FileWriter(FrameFilePath);
+        BufferedWriter buffer;
+        buffer = new BufferedWriter(writer);
+        buffer.write(keyFrames);
+        buffer.flush();
+    }
+    
+    public String segmentVideo() {
+        try
+            {            
+                String command = "ffmpeg -i " + inputVideo.toString() + " -force_key_frames " + keyFrames + " -codec:v copy -codec:a copy -map 0 -f segment -segment_list " + outputFolder.toString() + "\\out.ffconcat -segment_times " + keyFrames + " -segment_time_delta 0.05 " + outputFolder.toString() + "\\out%03d.nut";
+                Process p = Runtime.getRuntime().exec(command);
+                return "Video segmentation: Successful!";               
+            } catch (IOException ex) {
+                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        return "Video segmentation: Error!";
     }
 }

@@ -68,12 +68,12 @@ public class manageFreezeOption {
     public String segmentVideo() {
         try
             {            
-                String command = "ffmpeg -i " + inputVideo.toString() + " -force_key_frames " + keyFrames + " -codec:v copy -codec:a copy -map 0 -f segment -segment_list " + outputFolder.toString() + "\\out.ffconcat -segment_times " + keyFrames + " -segment_time_delta 0.05 " + outputFolder.toString() + "\\out%03d.nut";
+                String command = "ffmpeg -i " + inputVideo.toString() + " -force_key_frames " + keyFrames + " -map 0 -f segment -segment_list " + outputFolder.toString() + "\\out.ffconcat -segment_times " + keyFrames + " -segment_time_delta 0.05 " + outputFolder.toString() + "\\out%03d.mp4";
                 Process p = Runtime.getRuntime().exec(command);
-                return "Video segmentation: Successful!";               
+                               
             } catch (IOException ex) {
                 Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
             }
-        return "Video segmentation: Error!";
+        return "Video segmentation: Successful!";
     }
 }

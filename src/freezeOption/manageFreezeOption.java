@@ -6,9 +6,9 @@
 package freezeOption;
 
 import java.io.*;
-import java.security.Principal;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import processUtils.Segmenter;
+import processUtils.Cryptography;
+import processUtils.FileManipulation;
 
 /**
  * @authors G. Allegretta, F. Scarangella
@@ -53,7 +53,7 @@ public class manageFreezeOption {
         return "Key frames to be forced: Generated!\n\tHere is the list:\n\t" + keyFrames + "\n\tPlease remember it has been saved in frames.txt";
     }
     
-    // TO DO -> create a file in the output folder and save the keyframes
+    // create a file in the output folder and save the keyframes
     private void createFrameFile() throws IOException {
         String FrameFilePath = outputFolder.getAbsolutePath() + "\\frames.txt";
         
@@ -63,17 +63,29 @@ public class manageFreezeOption {
         buffer = new BufferedWriter(writer);
         buffer.write(keyFrames);
         buffer.flush();
+        buffer.close();
+        writer.close();
     }
     
     public String segmentVideo() {
-        try
-            {            
-                String command = "ffmpeg -i " + inputVideo.toString() + " -force_key_frames " + keyFrames + " -map 0 -f segment -segment_list " + outputFolder.toString() + "\\out.ffconcat -segment_times " + keyFrames + " -segment_time_delta 0.05 " + outputFolder.toString() + "\\out%03d.mp4";
-                Process p = Runtime.getRuntime().exec(command);
-                               
-            } catch (IOException ex) {
-                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        return "Video segmentation: Successful!";
+        Segmenter segment = new Segmenter(inputVideo,outputFolder,keyFrames);
+        segment.startSegmentation();
+        return "Video segmentation: Completed!";
+    }
+    
+    public String encryptVideo() throws Exception {
+        String key;
+        Cryptography cr = new Cryptography();
+        // Generate key from key frames list
+        key = cr.generatesKey(keyFrames);
+        // Get list of segments path
+        FileManipulation f = new FileManipulation();
+        String[] segmentList = (f.getSegmentsPath(outputFolder,".nut")).split(";");
+        // For each video in the folder, encrypt it
+        for(String path : segmentList) {
+            cr.encrypt(path, key);
+            f.deleteFile(path);
+        }    
+        return "Video Encryption: Completed!";
     }
 }

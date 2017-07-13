@@ -5,6 +5,7 @@
 
 package freezeOption;
 
+import processUtils.keyFrameGen;
 import java.io.*;
 import processUtils.Segmenter;
 import processUtils.Cryptography;
@@ -49,22 +50,9 @@ public class manageFreezeOption {
     public String generateKeyFrames() throws IOException {
         keyFrameGen gen = new keyFrameGen(durationVideo);
         keyFrames = gen.getKeyFrames();
-        createFrameFile();
+        FileManipulation f = new FileManipulation();
+        f.createFrameFile(outputFolder,keyFrames);
         return "Key frames to be forced: Generated!\n\tHere is the list:\n\t" + keyFrames + "\n\tPlease remember it has been saved in frames.txt";
-    }
-    
-    // create a file in the output folder and save the keyframes
-    private void createFrameFile() throws IOException {
-        String FrameFilePath = outputFolder.getAbsolutePath() + "\\frames.txt";
-        
-        FileWriter writer;
-        writer = new FileWriter(FrameFilePath);
-        BufferedWriter buffer;
-        buffer = new BufferedWriter(writer);
-        buffer.write(keyFrames);
-        buffer.flush();
-        buffer.close();
-        writer.close();
     }
     
     public String segmentVideo() {
@@ -80,8 +68,8 @@ public class manageFreezeOption {
         key = cr.generatesKey(keyFrames);
         // Get list of segments path
         FileManipulation f = new FileManipulation();
-        String[] segmentList = (f.getSegmentsPath(outputFolder,".nut")).split(";");
-        // For each video in the folder, encrypt it
+        String[] segmentList = (f.getSegmentsPath(outputFolder,".mp4")).split(";");
+        // For each nut file in the folder, encrypt it
         for(String path : segmentList) {
             cr.encrypt(path, key);
             f.deleteFile(path);

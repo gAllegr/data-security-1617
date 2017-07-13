@@ -102,7 +102,8 @@ public class Cryptography {
             //opening streams
             FileInputStream fis = new FileInputStream(path);
             try(CipherInputStream cin= new CipherInputStream(fis, c)){
-                try(FileOutputStream fos = new FileOutputStream(path.substring(0,path.lastIndexOf(".")))){
+                String pathDec = path.substring(0, path.length()-4);               
+                try(FileOutputStream fos = new FileOutputStream(pathDec+".mp4")){
                     copy(cin,fos);
                 } catch (Exception ex) {
                     Logger.getLogger(Cryptography.class.getName()).log(Level.SEVERE, null, ex);

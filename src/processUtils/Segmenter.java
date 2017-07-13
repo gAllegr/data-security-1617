@@ -33,7 +33,7 @@ public class Segmenter {
                                                             "-segment_list", myDirectory+"/out.ffconcat",
                                                             "-segment_times", frames,
                                                             "-segment_time_delta", "0.05",
-                                                            myDirectory+"/out%03d.nut"
+                                                            myDirectory+"/out%03d.mp4"
             );
             
             final Process p = pb.start();

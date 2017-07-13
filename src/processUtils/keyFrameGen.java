@@ -2,10 +2,11 @@
  * This class create a file in which are saved the key frames to be forced
  */
 
-package freezeOption;
+package processUtils;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -27,16 +28,18 @@ public class keyFrameGen {
     }
     
     // define a number of key frames to generate, setted between 2 and max
-    private int defineKeyFramesNumber() {
-        randomGenerator keyNumGen = new randomGenerator(2,max);
-        return keyNumGen.getRandomNumber();
+    private int defineKeyFramesNumber() {     
+        int minimum = 2;
+        Random rand = new Random();
+        int n = minimum + rand.nextInt(max - minimum + 1); 
+        return n;
     }
     
     // populate key frames array with possible values
     private void generateValues() {
-        randomGenerator valueGen = new randomGenerator(1,max);
+        Random rand = new Random();
         for(int i=0;i<keyFramesNumber;i++) {
-            keyFrames[i] = valueGen.getRandomNumber();
+            keyFrames[i] = min + rand.nextInt(max - min + 1); 
         }
     }
     
